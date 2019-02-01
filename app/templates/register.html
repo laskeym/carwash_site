@@ -2,15 +2,22 @@
 
 <form method="POST" action="{{ url_for('register') }}">
   {{ form.hidden_tag() }}
+
+  {{ form.errors.recaptcha }}
+
   <div>
+    <p>{{ form.errors.email }}</p>
     <label for="email">{{ form.email.label }} </label> {{ form.email }}
   </div>
   <div>
-    <label for="email">{{ form.password.label }} </label> {{ form.password }}
+    <label for="password">{{ form.password.label }} </label> {{ form.password }}
   </div>
   <div>
-    <label for="email">{{ form.password2.label }} </label> {{ form.password2 }}
+    <label for="password2">{{ form.password2.label }} </label> {{ form.password2 }}
+    <p>{{ form.errors.password }}</p>
   </div>
+
+  {{ form.recaptcha }}
 
   {{ form.submit() }}
 </form>

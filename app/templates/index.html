@@ -1,3 +1,13 @@
 <h1>Hello World</h1>
 
+<div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        {{ message }}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
 <a href="{{ url_for('register') }}">Sign Up</a>
