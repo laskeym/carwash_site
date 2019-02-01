@@ -9,6 +9,7 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 
+login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 from app import models

@@ -1,6 +1,6 @@
 from app import app, db
-from app.forms import RegistrationForm, LoginForm
-from app.models import User
+from app.forms import RegistrationForm, LoginForm, ProfileForm
+from app.models import User, UserProfile
 
 from werkzeug.urls import url_parse
 from flask import render_template, request, redirect, url_for, flash
@@ -12,13 +12,37 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        flash("You are already logged in!")
+        return redirect(url_for('index'))
+
+    form = RegistrationForm(request.form)
+    if form.validate_on_submit():
+      user = User.query.filter_by(email=form.email.data).first()
+      if user:
+        form.errors['email'] = 'Account with that email already exists!'
+        return render_template('register.html', form=form)
+      
+      user = User(email=form.email.data)
+      user.set_password(form.password.data)
+
+      db.session.add(user)
+      db.session.commit()
+      
+      flash('Account created!')
+      return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
       flash('You are already logged in!')
       return redirect(url_for('index'))
 
-    form = LoginForm()
+    form = LoginForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
@@ -41,32 +65,36 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    profile = UserProfile.query.filter_by(user_id=current_user.id).first()
+    form = ProfileForm(obj=profile)
+    if form.validate_on_submit():
+        if profile:
+            form.populate_obj(profile)
+            db.session.commit()
+            return redirect(url_for('dashboard'))
+        new_profile = UserProfile(user_id=current_user.id, first_name=form.first_name.data,
+                                  last_name=form.last_name.data, birth_date=form.birth_date.data,
+                                  address_1=form.address_1.data, address_2=form.address_2.data,
+                                  city=form.city.data, state=form.state.data,
+                                  zip=form.zip.data)
+        
+        db.session.add(new_profile)
+        db.session.commit()
+        return 'Profile Created!'
+    return render_template('profile.html', form=form)
+
+
 @app.route('/home')
 @login_required
 def home():
   return 'The current user is ' + current_user.email
 
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        flash("You are already logged in!")
-        return redirect(url_for('index'))
-
-    form = RegistrationForm()
-    if form.validate_on_submit():
-      print(form.data)
-      user = User.query.filter_by(email=form.email.data).first()
-      if user:
-        form.errors['email'] = 'Account with that email already exists!'
-        return render_template('register.html', form=form)
-      
-      user = User(email=form.email.data)
-      user.set_password(form.password.data)
-
-      db.session.add(user)
-      db.session.commit()
-      
-      flash('Account created!')
-      return redirect(url_for('login'))
-    return render_template('register.html', form=form)

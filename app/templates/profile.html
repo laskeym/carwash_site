@@ -1,0 +1,39 @@
+<h1>Profile</h1>
+
+<form method="POST" action="{{ url_for('profile') }}">
+  {{ form.hidden_tag() }}
+  <div>
+    <label for="first-name">{{ form.first_name.label }}</label>
+    {{ form.first_name }}
+  </div>
+  <div>
+    <label for="last-name">{{ form.last_name.label }}</label>
+    {{ form.last_name }}
+  </div>
+  <div>
+    <label for="birth-date">{{ form.birth_date.label }}</label>
+    {{ form.birth_date }}
+  </div>
+  <div>
+    <label for="address-1">{{ form.address_1.label }}</label>
+    {{ form.address_1 }}
+  </div>
+  <div>
+    <label for="address-2">{{ form.address_2.label }}</label>
+    {{ form.address_2}}
+  </div>
+  <div>
+    <label for="city">{{ form.city.label }}</label>
+    {{ form.city }}
+  </div>
+  <div>
+    <label for="state">{{ form.state.label }}</label>
+    {{ form.state }}
+  </div>
+  <div>
+    <label for="zip">{{ form.zip.label }}</label>
+    {{ form.zip }}
+  </div>
+
+  {{ form.submit() }}
+</form>

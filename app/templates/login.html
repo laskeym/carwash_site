@@ -12,10 +12,12 @@
     {% endwith %}
   </div>
   <div>
+    {{ form.errors.email }}
     <label for="email">{{ form.email.label }}</label>
     {{ form.email }}
   </div>
   <div>
+    {{ form.errors.password }}
     <label for="password">{{ form.password.label }}</label>
     {{ form.password }}
   </div>

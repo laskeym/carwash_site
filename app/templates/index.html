@@ -10,4 +10,8 @@
   {% endwith %}
 </div>
 
-<a href="{{ url_for('register') }}">Sign Up</a>
+{% if current_user.is_authenticated %}
+  <a href="{{ url_for('dashboard') }}">Dashboard</a>
+{% else %}
+  <a href="{{ url_for('register') }}">Sign Up</a>
+{% endif %}
