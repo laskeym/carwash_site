@@ -19,6 +19,8 @@ class User(UserMixin, db.Model):
     membership_id = db.Column(db.Integer, db.ForeignKey('membership.id'))
     created_date = db.Column(db.DateTime, default=datetime.datetime.now)
 
+    membership = db.relationship('Membership', backref='membership')
+
     def set_password(self, password):
         self.password = generate_password_hash(password)
 

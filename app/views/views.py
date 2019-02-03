@@ -1,6 +1,6 @@
 from app import app, db
 from app.forms import RegistrationForm, LoginForm, ProfileForm
-from app.models import User, UserProfile
+from app.models import User, UserProfile, Membership
 
 from werkzeug.urls import url_parse
 from flask import render_template, request, redirect, url_for, flash
@@ -91,6 +91,18 @@ def profile():
         db.session.commit()
         return 'Profile Created!'
     return render_template('profile.html', form=form)
+
+
+@app.route('/membership', methods=['GET', 'POST'])
+def membership():
+  memberships = Membership.query.all()
+
+  print(current_user.membership.membership_name)
+
+  for x in memberships:
+    print(x.membership_name)
+
+  return render_template('membership.html', memberships=memberships)
 
 
 @app.route('/home')
