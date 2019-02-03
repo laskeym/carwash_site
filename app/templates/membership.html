@@ -11,10 +11,14 @@
   <div>
       <p>{{ membership.membership_name }} Package</p>
     
-      <form method="POST" action="{{ url_for('membership') }}">
+      <form method="POST" action="{{ url_for('charge') }}">
         <input type="hidden" name="membership-id" value="{{ membership.id }}">
-    
-        <input type="submit" value="Subscribe">
+  
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="{{ key }}"
+                    data-description="A Flask Charge"
+                    data-amount="500"
+                    data-locale="auto"></script>
       </form>
   </div>
 

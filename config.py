@@ -1,4 +1,5 @@
 import os
+import stripe
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -14,3 +15,11 @@ class Config(object):
   # FLASK-WTF
   RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
   RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+
+  # Stripe
+  STRIPE_KEYS = {
+    'secret_key': os.environ.get('STRIPE_SK'),
+    'publishable_key': os.environ.get('STRIPE_PK')
+  }
+
+  stripe.api_key = STRIPE_KEYS['secret_key']

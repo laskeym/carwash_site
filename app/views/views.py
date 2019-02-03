@@ -6,6 +6,8 @@ from werkzeug.urls import url_parse
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
+import stripe
+
 
 @app.route('/')
 def index():
@@ -94,15 +96,34 @@ def profile():
 
 
 @app.route('/membership', methods=['GET', 'POST'])
+@login_required
 def membership():
-  memberships = Membership.query.all()
+    memberships = Membership.query.all()
 
-  print(current_user.membership.membership_name)
+    return render_template('membership.html', memberships=memberships,
+                           key=app.config['STRIPE_KEYS']['publishable_key'])
 
-  for x in memberships:
-    print(x.membership_name)
 
-  return render_template('membership.html', memberships=memberships)
+@app.route('/charge', methods=['POST'])
+@login_required
+def charge():
+    # Amount in cents
+    membership = Membership.query.filter_by(id=request.form['membership-id']).first()
+    amount = membership.membership_price
+
+    customer = stripe.Customer.create(
+        email=current_user.email,
+        source=request.form['stripeToken']
+    )
+
+    charge = stripe.Charge.create(
+      customer=customer.id,
+      amount=int(amount*100),
+      currency='usd',
+      description='Flask Charge'
+    )
+
+    return render_template('charge.html', amount=membership.membership_price)
 
 
 @app.route('/home')
