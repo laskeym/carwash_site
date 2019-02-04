@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
+    customer_id = db.Column(db.String)
     membership_id = db.Column(db.Integer, db.ForeignKey('membership.id'))
     created_date = db.Column(db.DateTime, default=datetime.datetime.now)
 
@@ -43,6 +44,14 @@ class UserProfile(db.Model):
   zip = db.Column(db.String)
 
 
+class Subscription(db.Model):
+    __tablename__ = 'subscription'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    subscription_id = db.Column(db.Integer, nullable=False)
+
+
 class Membership(db.Model):
     __tablename__ = 'membership'
 
@@ -50,6 +59,9 @@ class Membership(db.Model):
     membership_name = db.Column(db.String, nullable=False)
     membership_description = db.Column(db.String)
     membership_price = db.Column(db.Float(), nullable=False)
+    product_id = db.Column(db.String, nullable=False)
+    plan_id = db.Column(db.String, nullable=False)
+
     created_date = db.Column(db.DateTime, default=datetime.datetime.now)
 
 

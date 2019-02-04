@@ -1,6 +1,6 @@
 from app import app, db
 from app.forms import RegistrationForm, LoginForm, ProfileForm
-from app.models import User, UserProfile, Membership
+from app.models import User, UserProfile, Membership, Subscription
 
 from werkzeug.urls import url_parse
 from flask import render_template, request, redirect, url_for, flash
@@ -26,7 +26,7 @@ def register():
       if user:
         form.errors['email'] = 'Account with that email already exists!'
         return render_template('register.html', form=form)
-      
+
       user = User(email=form.email.data)
       user.set_password(form.password.data)
 
@@ -107,21 +107,45 @@ def membership():
 @app.route('/charge', methods=['POST'])
 @login_required
 def charge():
-    # Amount in cents
     membership = Membership.query.filter_by(id=request.form['membership-id']).first()
+    # Validate membership
+
+    # Amount in cents
     amount = membership.membership_price
 
-    customer = stripe.Customer.create(
-        email=current_user.email,
-        source=request.form['stripeToken']
-    )
+    if not current_user.customer_id:
+        customer = stripe.Customer.create(
+            email=current_user.email,
+            source=request.form['stripeToken']
+        )
+        current_user.customer_id = customer.id
 
-    charge = stripe.Charge.create(
-      customer=customer.id,
-      amount=int(amount*100),
-      currency='usd',
-      description='Flask Charge'
-    )
+        plan = stripe.Plan.retrieve(membership.plan_id)
+        subscription = stripe.Subscription.create(
+            customer=current_user.customer_id,
+            items=[
+              {
+                "plan": plan
+              }
+            ]
+        )
+
+        sub = Subscription(
+            user_id=current_user.id,
+            subscription_id=subscription.id
+        )
+
+        db.session.add(sub)
+        db.session.commit()
+
+        print('SUBSCRIBED')
+
+    # charge = stripe.Charge.create(
+    #   customer=customer.id,
+    #   amount=int(amount*100),
+    #   currency='usd',
+    #   description='Flask Charge'
+    # )
 
     return render_template('charge.html', amount=membership.membership_price)
 
