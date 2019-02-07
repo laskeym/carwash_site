@@ -11,11 +11,6 @@ from flask_login import login_user, login_required, logout_user, current_user
 import stripe
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -44,7 +39,7 @@ def register():
 def login():
     if current_user.is_authenticated:
       flash('You are already logged in!')
-      return redirect(url_for('index'))
+      return redirect(url_for('account'))
 
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -55,7 +50,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('account')
         return redirect(next_page)
     return render_template('login.html', form=form)
 
@@ -67,34 +62,6 @@ def logout():
     flash('You have logged out!')
 
     return redirect(url_for('login'))
-
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    return render_template('dashboard.html')
-
-
-@app.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profile():
-    profile = UserProfile.query.filter_by(user_id=current_user.id).first()
-    form = ProfileForm(obj=profile)
-    if form.validate_on_submit():
-        if profile:
-            form.populate_obj(profile)
-            db.session.commit()
-            return redirect(url_for('dashboard'))
-        new_profile = UserProfile(user_id=current_user.id, first_name=form.first_name.data,
-                                  last_name=form.last_name.data, birth_date=form.birth_date.data,
-                                  address_1=form.address_1.data, address_2=form.address_2.data,
-                                  city=form.city.data, state=form.state.data,
-                                  zip=form.zip.data)
-        
-        db.session.add(new_profile)
-        db.session.commit()
-        return 'Profile Created!'
-    return render_template('profile.html', form=form)
 
 
 @app.route('/subscriptions')
@@ -163,59 +130,51 @@ def subscribe():
   return render_template('subscribe.html', plan=plan)
 
 
-@app.route('/charge', methods=['POST'])
+@app.route('/')
+@app.route('/account')
 @login_required
-def charge():
-    """
-    Stripe Customer/Subscription handling.  
-    """
-    stripeToken = request.args.get('stripeToken', None)
+def account():
+    return render_template('account.html')
 
-    membership = Membership.query.filter_by(id=request.form['membership-id']).first()
-    # Validate membership
 
-    # Amount in cents
-    amount = membership.membership_price
+@app.route('/account/subscription')
+def account_subscription():
+    charges = sorted(stripe.Charge.list(customer="cus_EU4SUboYdxB0J4"), key=lambda ch: ch['created'])
 
-    if not current_user.customer_id:
-        customer = stripe.Customer.create(
-            email=current_user.email,
-            source=request.form['stripeToken']
-        )
-        current_user.customer_id = customer.id
+    # print('*'*75)
+    # print(charges)
+    # print('*'*75)
 
-        plan = stripe.Plan.retrieve(membership.plan_id)
-        subscription = stripe.Subscription.create(
-            customer=current_user.customer_id,
-            items=[
-              {
-                "plan": plan
-              }
-            ]
-        )
+    subscription = stripe.Subscription.retrieve("sub_EU4S9WYN9inR9g")
 
-        sub = Subscription(
-            user_id=current_user.id,
-            subscription_id=subscription.id
-        )
+    print('*'*75)
+    print(subscription['current_period_end'])
+    print('*'*75)
 
-        db.session.add(sub)
+    return render_template('account_subscription.html')
+
+
+@app.route('/account/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    profile = UserProfile.query.filter_by(user_id=current_user.id).first()
+    form = ProfileForm(obj=profile)
+    if form.validate_on_submit():
+        if profile:
+            form.populate_obj(profile)
+            db.session.commit()
+
+            flash('Profile Information has been saved!')
+            return redirect(url_for('account'))
+        new_profile = UserProfile(user_id=current_user.id, first_name=form.first_name.data,
+                                  last_name=form.last_name.data, birth_date=form.birth_date.data,
+                                  address_1=form.address_1.data, address_2=form.address_2.data,
+                                  city=form.city.data, state=form.state.data,
+                                  zip=form.zip.data)
+        
+        db.session.add(new_profile)
         db.session.commit()
-
-        print('SUBSCRIBED')
-
-    # charge = stripe.Charge.create(
-    #   customer=customer.id,
-    #   amount=int(amount*100),
-    #   currency='usd',
-    #   description='Flask Charge'
-    # )
-
-    return render_template('charge.html', amount=membership.membership_price)
-
-
-@app.route('/home')
-@login_required
-def home():
-  return 'The current user is ' + current_user.email
-
+        
+        flash('Profile Information has been saved!')
+        return redirect(url_for('account'))
+    return render_template('profile.html', form=form)

@@ -33,4 +33,4 @@ class ProfileForm(FlaskForm):
     city = StringField()
     state = SelectField(choices=choices)
     zip = StringField()
-    submit = SubmitField('Submit')
+    submit = SubmitField('Save')
