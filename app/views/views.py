@@ -1,4 +1,6 @@
 from app import app, db
+from app.lib.pw_gen import pw_gen
+from app.lib.email import email_subscribe
 from app.forms import RegistrationForm, LoginForm, ProfileForm
 from app.models import User, UserProfile, Membership, Subscription
 
@@ -95,18 +97,80 @@ def profile():
     return render_template('profile.html', form=form)
 
 
-@app.route('/membership', methods=['GET', 'POST'])
-@login_required
-def membership():
-    memberships = Membership.query.all()
+@app.route('/subscriptions')
+def subscriptions():
+    plans = sorted(stripe.Plan.list(), key=lambda p: p['created'])
 
-    return render_template('membership.html', memberships=memberships,
+    return render_template('subscriptions.html', plans=plans,
                            key=app.config['STRIPE_KEYS']['publishable_key'])
+
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+  """
+  Subscribe a new customer to a plan.
+
+  1. Create customer account
+  2. Create user in DB
+  3. Add subscription to Stripe
+  4. Email customer with new account credentials
+  """
+  stripeToken = request.form['stripeToken']
+  plan_id = request.form['plan-id']
+  email = request.form['stripeEmail']
+
+  if not stripeToken or not plan_id or not email:
+      return 'MISSING PARAMETER'
+
+  # Fetch plan
+  plan = stripe.Plan.retrieve(plan_id)
+
+  # Do a check to see if email exists in DB
+  account = User.query.filter_by(email=email).first()
+  if account:
+      flash('Account already exists!')
+      return redirect(url_for('login'))
+
+  # Create a customer account
+  customer = stripe.Customer.create(
+      email=email,
+      source=request.form['stripeToken']
+  )
+
+  # Create new account in DB
+  new_account = User(
+      email=email,
+      customer_id=customer.id
+  )
+  password = pw_gen()
+  new_account.set_password(password)
+  db.session.add(new_account)
+  db.session.commit()
+
+  # Add new subscription to Stripe
+  subscription = stripe.Subscription.create(
+      customer=customer.id,
+      items=[
+          {
+              'plan': plan
+          }
+      ]
+  )
+
+  # Email customer with new account credentials
+  email_subscribe(email=email, password=password)
+
+  return render_template('subscribe.html', plan=plan)
 
 
 @app.route('/charge', methods=['POST'])
 @login_required
 def charge():
+    """
+    Stripe Customer/Subscription handling.  
+    """
+    stripeToken = request.args.get('stripeToken', None)
+
     membership = Membership.query.filter_by(id=request.form['membership-id']).first()
     # Validate membership
 

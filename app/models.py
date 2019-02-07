@@ -17,10 +17,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     customer_id = db.Column(db.String)
-    membership_id = db.Column(db.Integer, db.ForeignKey('membership.id'))
     created_date = db.Column(db.DateTime, default=datetime.datetime.now)
-
-    membership = db.relationship('Membership', backref='membership')
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -48,7 +45,8 @@ class Subscription(db.Model):
     __tablename__ = 'subscription'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    membership_id = db.Column(db.Integer, db.ForeignKey('membership.id'))
     subscription_id = db.Column(db.Integer, nullable=False)
 
 

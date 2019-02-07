@@ -1,0 +1,26 @@
+<h1>Subscriptions</h1>
+
+{% for plan in plans %}
+
+  <div>
+      <p>{{ plan.nickname }}</p>
+
+      <ul>
+        {{ plan.metadata['description'] | safe }}
+      </ul>
+
+      <p>${{ plan.amount / 100 }}</p>
+    
+      <form method="POST" action="{{ url_for('subscribe') }}">
+        <input type="hidden" name="plan-id" value="{{ plan.id }}">
+  
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="{{ key }}"
+                    data-description=""
+                    data-amount="{{ plan.amount }}"
+                    data-label="Subscribe"
+                    data-locale="auto"></script>
+      </form>
+  </div>
+
+{% endfor %}
