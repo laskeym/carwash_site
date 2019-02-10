@@ -2,7 +2,58 @@
 
 <p><a href="{{ url_for('account') }}">Back to account</a></p>
 
-<ul>
-  <li><a href="#">View Billing History</a></li>
-  <li><a href="#">Change Subscription</a></li>
-</ul>
+<div>
+  <div>
+    <p>{{ subscription['plan']['nickname'] }}</p>
+    <p><a href="{{ url_for('change_subscription') }}">Change Subscription</a></p>
+  </div>
+  
+  <div>
+    <p>Next Payment: {{ subscription['current_period_end'] }}</p>
+  </div>
+</div>
+
+<div>
+  <h3>Billing History</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Date
+        </th>
+        <th>
+          Amount
+        </th>
+        <th>
+          Status
+        </th>
+        <th>
+          Invoice
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for charge in charges %}
+        <tr>
+          <td>
+            {{ charge['created'] }}
+          </td>
+          <td>
+            ${{ charge['amount'] / 100 }}
+          </td>
+          <td>
+            {% if charge['paid'] == True %}
+              Paid
+            {% else %}
+              Not Paid
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ charge['receipt_url'] }}" target="_blank">View Invoice</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

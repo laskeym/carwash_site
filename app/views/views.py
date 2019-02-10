@@ -10,6 +10,8 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 import stripe
 
+from datetime import datetime
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -138,20 +140,38 @@ def account():
 
 
 @app.route('/account/subscription')
+@login_required
 def account_subscription():
+    """
+    ------
+    Note:
+    ------
+    
+    * During subscription retrieval we use the customers subscriptions value.  If this wasn't a 1 to 1 model (i.e 1 Plan to 1 Product) and was a multiple subscription based model, the nested retrival most likely would not be the right approach. 
+    """
+
+    customer = stripe.Customer.retrieve(current_user.customer_id)
+    subscription = stripe.Subscription.retrieve(customer['subscriptions']['data'][0]['id'])
     charges = sorted(stripe.Charge.list(customer="cus_EU4SUboYdxB0J4"), key=lambda ch: ch['created'])
 
-    # print('*'*75)
-    # print(charges)
-    # print('*'*75)
+    for charge in charges:
+        charge['created'] = datetime.utcfromtimestamp(charge['created']).strftime('%m/%d/%Y')
+    subscription['current_period_end'] = datetime.utcfromtimestamp(subscription['current_period_end']).strftime('%m/%d/%Y')
 
-    subscription = stripe.Subscription.retrieve("sub_EU4S9WYN9inR9g")
+    return render_template('account_subscription.html', subscription=subscription,
+                           charges=charges,
+                           customer=customer)
 
-    print('*'*75)
-    print(subscription['current_period_end'])
-    print('*'*75)
 
-    return render_template('account_subscription.html')
+@app.route('/account/subscription/change')
+@login_required
+def change_subscription():
+    customer = stripe.Customer.retrieve(current_user.customer_id)
+    subscription = stripe.Subscription.retrieve(customer['subscriptions']['data'][0]['id'])
+    plans = sorted(stripe.Plan.list(), key=lambda p: p['created'])
+    plans = list(filter(lambda x: x['id'] != subscription['plan']['id'], plans))
+
+    return render_template('change_subscription.html', plans=plans)
 
 
 @app.route('/account/profile', methods=['GET', 'POST'])
