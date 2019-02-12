@@ -152,7 +152,8 @@ def account_subscription():
 
     customer = stripe.Customer.retrieve(current_user.customer_id)
     subscription = stripe.Subscription.retrieve(customer['subscriptions']['data'][0]['id'])
-    charges = sorted(stripe.Charge.list(customer="cus_EU4SUboYdxB0J4"), key=lambda ch: ch['created'])
+    charges = sorted(stripe.Charge.list(customer=customer.id), key=lambda ch: ch['created'])
+    upcoming_invoice = stripe.Invoice.upcoming(customer=customer.id)
 
     for charge in charges:
         charge['created'] = datetime.utcfromtimestamp(charge['created']).strftime('%m/%d/%Y')
@@ -160,6 +161,7 @@ def account_subscription():
 
     return render_template('account_subscription.html', subscription=subscription,
                            charges=charges,
+                           upcoming_invoice=upcoming_invoice,
                            customer=customer)
 
 
@@ -172,6 +174,24 @@ def change_subscription():
     plans = list(filter(lambda x: x['id'] != subscription['plan']['id'], plans))
 
     return render_template('change_subscription.html', plans=plans)
+
+
+@app.route('/account/subscription/update', methods=['POST'])
+@login_required
+def update_subscription():
+    plan_id = request.form['plan-id']
+    customer = stripe.Customer.retrieve(current_user.customer_id)
+    subscription = stripe.Subscription.retrieve(customer['subscriptions']['data'][0]['id'])
+
+    stripe.Subscription.modify(subscription['id'],
+        items=[{
+            'id': subscription['items']['data'][0].id,
+            'plan': plan_id
+        }])
+
+    flash('Subscription Updated!')
+
+    return redirect(url_for('account_subscription'))
 
 
 @app.route('/account/profile', methods=['GET', 'POST'])

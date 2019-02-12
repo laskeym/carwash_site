@@ -5,6 +5,7 @@ from app import app, db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)
@@ -18,6 +19,8 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String, nullable=False)
     customer_id = db.Column(db.String)
     created_date = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    profile = db.relationship('UserProfile', uselist=False, back_populates='user', lazy=True)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -39,6 +42,8 @@ class UserProfile(db.Model):
   city = db.Column(db.String)
   state = db.Column(db.String(2))
   zip = db.Column(db.String)
+
+  user = db.relationship('User', back_populates='profile', lazy=True)
 
 
 class Subscription(db.Model):

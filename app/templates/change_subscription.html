@@ -1,1 +1,11 @@
 <h1>Change Subscription</h1>
+
+{% for plan in plans %}
+<form action="{{ url_for('update_subscription') }}"  method="POST">
+  <input type="hidden" name="plan-id" value="{{ plan.id }}">
+
+  <p>{{ plan.nickname }}</p>
+
+  <input type="submit" value="Change Plan">
+</form>
+{% endfor %}

@@ -9,7 +9,7 @@
   </div>
   
   <div>
-    <p>Next Payment: {{ subscription['current_period_end'] }}</p>
+    <p>Next Payment: ${{ upcoming_invoice['amount_due'] / 100 }} on {{ subscription['current_period_end'] }}</p>
   </div>
 </div>
 
