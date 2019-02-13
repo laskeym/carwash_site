@@ -1,27 +1,31 @@
-<h1>Login</h1>
+{% extends 'base.html' %}
 
-<form method="POST" action="{{ url_for('login') }}">
-  {{ form.hidden_tag() }}
-  <div style="background-color:red; color: salmon; display: inline-block;">
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-          {{ message }}
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-  </div>
-  <div>
-    {{ form.errors.email }}
-    <label for="email">{{ form.email.label }}</label>
-    {{ form.email }}
-  </div>
-  <div>
-    {{ form.errors.password }}
-    <label for="password">{{ form.password.label }}</label>
-    {{ form.password }}
-  </div>
-  <label for="remember_me">{{ form.remember_me.label }}</label>
-  {{ form.remember_me }}
-  {{ form.submit() }}
-</form>
+{% block content %}
+  <h1>Login</h1>
+
+  <form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+    <div style="background-color:red; color: salmon; display: inline-block;">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+    <div>
+      {{ form.errors.email }}
+      <label for="email">{{ form.email.label }}</label>
+      {{ form.email }}
+    </div>
+    <div>
+      {{ form.errors.password }}
+      <label for="password">{{ form.password.label }}</label>
+      {{ form.password }}
+    </div>
+    <label for="remember_me">{{ form.remember_me.label }}</label>
+    {{ form.remember_me }}
+    {{ form.submit() }}
+  </form>
+{% endblock %}

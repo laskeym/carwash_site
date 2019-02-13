@@ -68,6 +68,9 @@ def logout():
 
 @app.route('/subscriptions')
 def subscriptions():
+    if current_user.is_authenticated:
+        return redirect(url_for('account'))
+
     plans = sorted(stripe.Plan.list(), key=lambda p: p['created'])
 
     return render_template('subscriptions.html', plans=plans,
@@ -132,7 +135,6 @@ def subscribe():
   return render_template('subscribe.html', plan=plan)
 
 
-@app.route('/')
 @app.route('/account')
 @login_required
 def account():

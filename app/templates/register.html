@@ -1,23 +1,27 @@
-<h1>Register</h1>
+{% extends 'base.html' %}
 
-<form method="POST" action="{{ url_for('register') }}">
-  {{ form.hidden_tag() }}
+{% block content %}
+  <h1>Register</h1>
 
-  {{ form.errors.recaptcha }}
+  <form method="POST" action="{{ url_for('register') }}">
+    {{ form.hidden_tag() }}
 
-  <div>
-    <p>{{ form.errors.email }}</p>
-    <label for="email">{{ form.email.label }} </label> {{ form.email }}
-  </div>
-  <div>
-    <label for="password">{{ form.password.label }} </label> {{ form.password }}
-  </div>
-  <div>
-    <label for="password2">{{ form.password2.label }} </label> {{ form.password2 }}
-    <p>{{ form.errors.password }}</p>
-  </div>
+    {{ form.errors.recaptcha }}
 
-  {{ form.recaptcha }}
+    <div>
+      <p>{{ form.errors.email }}</p>
+      <label for="email">{{ form.email.label }} </label> {{ form.email }}
+    </div>
+    <div>
+      <label for="password">{{ form.password.label }} </label> {{ form.password }}
+    </div>
+    <div>
+      <label for="password2">{{ form.password2.label }} </label> {{ form.password2 }}
+      <p>{{ form.errors.password }}</p>
+    </div>
 
-  {{ form.submit() }}
-</form>
+    {{ form.recaptcha }}
+
+    {{ form.submit() }}
+  </form>
+{% endblock %}

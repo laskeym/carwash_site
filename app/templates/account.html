@@ -1,17 +1,50 @@
-<h1>Account</h1>
+{% extends 'base.html' %}
 
-<p>Welcome {{ current_user.profile.first_name if current_user.profile.first_name else current_user.email }}!</p>
+{% block content %}
+  <div class="container">
+    <h1>Account</h1>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      {{ message }}
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+    <p class="lead">Welcome {{ current_user.profile.first_name if current_user.profile.first_name else current_user.email }}!</p>
 
-<ul>
-  <li><a href="{{ url_for('profile') }}">Profile Information</a></li>
-  <li><a href="{{ url_for('account_subscription') }}">Subscription Information</a></li>
-  <li><a href="#">Need a new sticker</a></li>
-</ul>
+    <div class="row">
+      <div class="col-md-6">
+        <a href="{{ url_for('profile') }}">
+          <div class="card">
+            <div class="card-body mx-auto">
+              <h5 class="card-title">
+                <i class="fas fa-user fa-2x text-center pb-2" style="display: block;"></i>
+                Profile Information
+              </h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6">
+        <a href="{{ url_for('account_subscription') }}">
+          <div class="card">
+            <div class="card-body mx-auto">
+              <h5 class="card-title">
+                <i class="fas fa-file-invoice-dollar fa-2x text-center pb-2" style="display: block;"></i>
+                Subscription Information
+              </h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6 mx-auto py-4">
+        <a href="#">
+          <div class="card">
+            <div class="card-body mx-auto">
+              <h5 class="card-title">
+                <i class="fas fa-camera fa-2x text-center pb-2" style="display: block;"></i>
+                New Sticker
+              </h5>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
