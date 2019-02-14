@@ -9,7 +9,7 @@
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           {% for message in messages %}
-            <div class="col-md-12 alert alert-success text-center" role="alert">
+            <div class="col-md-12 alert alert-warning text-center" role="alert">
               {{ message }}
             </div>
           {% endfor %}
@@ -27,12 +27,27 @@
             </p>
           </div>
           <div class="col-md-6 text-center">
-            <p class="lead">
-              Next Payment: <br>
-              {{ subscription['current_period_end'] }}
-            </p>
+            {% if subscription.cancel_at_period_end %}
+              <p class="lead">
+                Subscription set to cancel on: <br>
+                {{ subscription['cancel_at'] }}
+              </p>
+            {% else %}
+              <p class="lead">
+                Next Payment: <br>
+                {{ subscription['current_period_end'] }}
+              </p>
+            {% endif %}
           </div>
-          <a href="#" class="btn btn-danger mx-auto">Cancel Subscription</a>
+          <form class="mx-auto" method="POST" action="{{ url_for('cancel_subscription') }}">
+            {% if subscription.cancel_at_period_end %}
+              <input type="hidden" name="action" value="reactivate">
+              <button class="btn btn-outline-success">Reactivate Subscription</button>
+            {% else %}
+              <input type="hidden" name="action" value="cancel">
+              <button class="btn btn-outline-danger">Cancel Subscription</button>
+            {% endif %}
+          </form>
         </div>
 
         <div class="row mt-3">

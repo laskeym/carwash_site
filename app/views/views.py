@@ -141,6 +141,8 @@ def account_subscription():
     for charge in charges:
         charge['created'] = datetime.utcfromtimestamp(charge['created']).strftime('%m/%d/%Y')
     subscription['current_period_end'] = datetime.utcfromtimestamp(subscription['current_period_end']).strftime('%m/%d/%Y')
+    if subscription['cancel_at']:
+        subscription['cancel_at'] = datetime.utcfromtimestamp(subscription['cancel_at']).strftime('%m/%d/%Y')
 
     return render_template('account_subscription.html', subscription=subscription,
                            charges=charges,
@@ -174,6 +176,33 @@ def update_subscription():
 
     flash('Subscription Updated!')
 
+    return redirect(url_for('account_subscription'))
+
+
+@app.route('/account/subscription/cancel', methods=['POST'])
+def cancel_subscription():
+    action = request.form['action']
+    if not action:
+        flash('Missing information!')
+        return redirect(url_for('account_subscription'))
+
+    customer = stripe.Customer.retrieve(current_user.customer_id)
+    subscription = stripe.Subscription.retrieve(customer['subscriptions']['data'][0]['id'])
+
+    if action == 'cancel':
+        subscription.cancel_at_period_end = True
+        subscription.save()
+        cancel_dt = datetime.utcfromtimestamp(subscription['cancel_at']).strftime('%m/%d/%Y')
+        flash('Subscription will be cancelled as of {cancel_dt}!'
+              .format(cancel_dt=cancel_dt))
+    elif action == 'reactivate':
+        subscription.cancel_at_period_end = False 
+        subscription.save()
+        flash('Subscription has been reactivated!')
+    else:
+        flash('Missing information!')
+        return redirect(url_for('account_subscription'))
+        
     return redirect(url_for('account_subscription'))
 
 

@@ -9,28 +9,32 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 mx-auto">
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-danger text-center" role="alert">
-                {{ message }}
+        <div class="card">
+          <div class="card-body">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-danger text-center" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('login') }}" method="POST">
+              {{ form.hidden_tag() }}
+              <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class='form-control') }}
               </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-        <form action="{{ url_for('login') }}" method="POST">
-          {{ form.hidden_tag() }}
-          <div class="form-group">
-            {{ form.email.label }}
-            {{ form.email(class='form-control') }}
+              <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class='form-control') }}
+              </div>
+    
+              {{ form.submit(class='btn btn-lg btn-block btn-outline-primary') }}
+            </form>
           </div>
-          <div class="form-group">
-            {{ form.password.label }}
-            {{ form.password(class='form-control') }}
-          </div>
-
-          {{ form.submit(class='btn btn-lg btn-block btn-outline-primary') }}
-        </form>
+        </div>
       </div>
     </div>
   </div>
