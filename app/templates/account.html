@@ -7,6 +7,15 @@
     <p class="lead">Welcome {{ current_user.profile.first_name if current_user.profile.first_name else current_user.email }}!</p>
 
     <div class="row">
+      {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="col-md-12 alert alert-danger text-center" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
       <div class="col-md-6">
         <a href="{{ url_for('profile') }}">
           <div class="card">
@@ -33,13 +42,26 @@
         </a>
       </div>
 
-      <div class="col-md-6 mx-auto py-4">
+      <div class="col-md-6 py-4">
         <a href="#">
           <div class="card">
             <div class="card-body mx-auto">
               <h5 class="card-title">
                 <i class="fas fa-camera fa-2x text-center pb-2" style="display: block;"></i>
                 New Sticker
+              </h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6 py-4">
+        <a href="{{ url_for('change_password') }}">
+          <div class="card">
+            <div class="card-body mx-auto">
+              <h5 class="card-title">
+                <i class="fas fa-key fa-2x text-center pb-2" style="display: block;"></i>
+                Change Password
               </h5>
             </div>
           </div>

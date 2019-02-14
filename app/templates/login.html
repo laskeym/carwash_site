@@ -1,31 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Login</h1>
+  <div class="py-3">
+    <h1 class="display-4 text-center">Login</h1>
+  </div>
 
-  <form method="POST" action="{{ url_for('login') }}">
-    {{ form.hidden_tag() }}
-    <div style="background-color:red; color: salmon; display: inline-block;">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for message in messages %}
-            {{ message }}
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger text-center" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('login') }}" method="POST">
+          {{ form.hidden_tag() }}
+          <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class='form-control') }}
+          </div>
+          <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password(class='form-control') }}
+          </div>
+
+          {{ form.submit(class='btn btn-lg btn-block btn-outline-primary') }}
+        </form>
+      </div>
     </div>
-    <div>
-      {{ form.errors.email }}
-      <label for="email">{{ form.email.label }}</label>
-      {{ form.email }}
-    </div>
-    <div>
-      {{ form.errors.password }}
-      <label for="password">{{ form.password.label }}</label>
-      {{ form.password }}
-    </div>
-    <label for="remember_me">{{ form.remember_me.label }}</label>
-    {{ form.remember_me }}
-    {{ form.submit() }}
-  </form>
+  </div>
 {% endblock %}

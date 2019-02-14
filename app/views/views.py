@@ -1,7 +1,7 @@
 from app import app, db
 from app.lib.pw_gen import pw_gen
 from app.lib.email import email_subscribe
-from app.forms import RegistrationForm, LoginForm, ProfileForm
+from app.forms import RegistrationForm, LoginForm, ProfileForm, ChangePasswordForm
 from app.models import User, UserProfile, Membership, Subscription
 
 from werkzeug.urls import url_parse
@@ -13,35 +13,16 @@ import stripe
 from datetime import datetime
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        flash("You are already logged in!")
-        return redirect(url_for('index'))
-
-    form = RegistrationForm(request.form)
-    if form.validate_on_submit():
-      user = User.query.filter_by(email=form.email.data).first()
-      if user:
-        form.errors['email'] = 'Account with that email already exists!'
-        return render_template('register.html', form=form)
-
-      user = User(email=form.email.data)
-      user.set_password(form.password.data)
-
-      db.session.add(user)
-      db.session.commit()
-      
-      flash('Account created!')
-      return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-      flash('You are already logged in!')
-      return redirect(url_for('account'))
+        flash('You are already logged in!')
+        return redirect(url_for('account'))
 
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -220,3 +201,16 @@ def profile():
         flash('Profile Information has been saved!')
         return redirect(url_for('account'))
     return render_template('profile.html', form=form)
+
+
+@app.route('/account/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+        current_user.set_password(form.password.data)
+        db.session.commit()
+        flash('Password updated!')
+        return redirect(url_for('account'))
+    return render_template('change_password.html', form=form)

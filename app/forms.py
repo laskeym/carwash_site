@@ -34,3 +34,12 @@ class ProfileForm(FlaskForm):
     state = SelectField(choices=choices)
     zip = StringField()
     submit = SubmitField('Save')
+
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField('Password', [validators.DataRequired(),
+                                          validators.Length(min=8),
+                                          validators.EqualTo('password2', message='Passwords must match!')])
+    password2 = PasswordField('Confirm Password')
+    recaptcha = RecaptchaField()
+    submit = SubmitField('Change Password')
