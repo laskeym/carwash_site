@@ -1,0 +1,60 @@
+html, body, row {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#intro {
+  padding: 0;
+  position: relative;
+  background-image: url('../img/landing_1.jpg');
+  height: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-bottom: 5px solid steelblue;
+}
+
+.mask {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#lead {
+  color: white;
+}
+
+#newsletter {
+  height: 20%;
+}
+
+#newsletter .row {
+  height: 100%;
+}
+
+#newsletter .row .col-md-8 {
+  color: white;
+  border: 1px solid darkslateblue;
+  background-color: steelblue;
+}
+
+#contact {
+  padding: 0;
+  position: relative;
+  height: 70%;
+  color: white;
+  background-image: url("../img/landing_3.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#contact .row {
+  height: 100%;
+}
+
+footer .container-fluid {
+  background-color: steelblue;
+}

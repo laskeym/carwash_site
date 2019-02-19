@@ -1,5 +1,79 @@
 {% extends 'base.html' %}
 
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+
 {% block content %}
-  <h1>Index</h1>
+  <div class="container-fluid" id="intro">
+    <div class="row mask">
+      <div class="col-md-6 m-auto text-center" id="lead">
+        <h4 class="display-4">Elite Car Wash</h4>
+        <p class="lead">
+          Unlimited car wash packages starting at $19.99!
+        </p>
+
+        <a href="{{ url_for('subscriptions') }}" class="btn btn-lg btn-primary">View Packages</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-3" id="newsletter">
+    <div class="row">
+      <div class="col-md-8 m-auto py-4 pl-5">
+        <span>
+          Susbscribe to our newsletter ro receive coupons and discounts on upcoming car washes!
+        </span>
+        <button class="btn btn-lg btn-primary rounded-0 mx-5 px-4">Subscribe</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid" id="contact">
+    <div class="row mask">
+      <div class="col-md-12">
+        <h2 class="display-4 text-center py-4">Contact Us</h2>
+      </div>
+      <div class="col-md-6 text-center my-auto" id="address-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3016.964695184627!2d-74.30537168416562!3d40.87264897931481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c300d11e636155%3A0x9f3fb493d08c4530!2s61+Fairfield+Rd%2C+Fairfield%2C+NJ+07004!5e0!3m2!1sen!2sus!4v1550524651427" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+      </div>
+
+      <div class="col-md-4 offset-md-1 my-auto">
+        <div class="card-body">
+          <form action="">
+            <div class="form-group my-2">
+              <label for="email">Email Address</label>
+              <input type="email" name="email" class="form-control bg-transparent text-white rounded-0" placeholder="Email Address">
+            </div>
+            <div class="form-group my-3">
+              <label for="message">Message</label>
+              <textarea name="message"cols="30" rows="10" class="form-control bg-transparent text-white rounded-0" placeholder="Your message..."></textarea>
+            </div>
+  
+            <button class="btn btn-lg btn-outline-light mt-2 rounded-0">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div id="intro">
+    <div id="mask">
+      <div id="content" class="text-center">
+        <h4 class="display-4">Elite Car Wash</h4>
+        <p class="lead">
+          Unlimited car wash packages starting at $19.99!
+        </p>
+        
+        <button class="btn btn-lg btn-primary">See Packages</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="newsletter">
+    <div class="text-center my-auto">
+      <p>Sign up for our newsletter to receive discounts on upcoming car washes</p>
+      <button class="btn btn-lg btn-outline-primary">Sign Up!</button>
+    </div>
+  </div> -->
 {% endblock %}

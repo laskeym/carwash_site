@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container">
+  <div class="container" id="account">
     <h1>Account</h1>
 
     <p class="lead">Welcome {{ current_user.profile.first_name if current_user.profile.first_name else current_user.email }}!</p>
@@ -19,9 +19,9 @@
       <div class="col-md-6">
         <a href="{{ url_for('profile') }}">
           <div class="card">
-            <div class="card-body mx-auto">
+            <div class="card-body mx-auto p-5 text-center">
               <h5 class="card-title">
-                <i class="fas fa-user fa-2x text-center pb-2" style="display: block;"></i>
+                <i class="fas fa-user fa-2x text-center pb-2"></i> <br>
                 Profile Information
               </h5>
             </div>
@@ -32,9 +32,9 @@
       <div class="col-md-6">
         <a href="{{ url_for('account_subscription') }}">
           <div class="card">
-            <div class="card-body mx-auto">
-              <h5 class="card-title">
-                <i class="fas fa-file-invoice-dollar fa-2x text-center pb-2" style="display: block;"></i>
+            <div class="card-body mx-auto p-5 text-center">
+              <h5 class="card-title" id="test">
+                <i class="fas fa-file-invoice-dollar fa-2x pb-2"></i> <br>
                 Subscription Information
               </h5>
             </div>
@@ -45,9 +45,9 @@
       <div class="col-md-6 py-4">
         <a href="#">
           <div class="card">
-            <div class="card-body mx-auto">
+            <div class="card-body mx-auto p-5 text-center">
               <h5 class="card-title">
-                <i class="fas fa-camera fa-2x text-center pb-2" style="display: block;"></i>
+                <i class="fas fa-camera fa-2x pb-2"></i> <br>
                 New Sticker
               </h5>
             </div>
@@ -58,9 +58,9 @@
       <div class="col-md-6 py-4">
         <a href="{{ url_for('change_password') }}">
           <div class="card">
-            <div class="card-body mx-auto">
+            <div class="card-body mx-auto p-5 text-center">
               <h5 class="card-title">
-                <i class="fas fa-key fa-2x text-center pb-2" style="display: block;"></i>
+                <i class="fas fa-key fa-2x pb-2"></i> <br>
                 Change Password
               </h5>
             </div>

@@ -9,6 +9,7 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
 import stripe
+import qrcode
 
 from datetime import datetime
 

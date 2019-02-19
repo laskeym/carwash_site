@@ -6,10 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.3.0-dist/bootstrap-4.3.0-dist/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main_layout.css') }}">
+  {% block head %}
+
+  {% endblock %}
   <title>Elite Carwash</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
   <a class="navbar-brand" href="{{ url_for('index') }}">
     Elite Car Wash
   </a>
@@ -38,5 +42,29 @@
   {% block content %}
 
   {% endblock %}
+
+<footer class="pt-4">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 my-0 mt-3">
+        <div class="my-3">
+          <i class="fas fa-phone-square fa-2x"></i> (973)-997-3796
+        </div>
+        <div class="my-3">
+          <i class="fas fa-envelope-square fa-2x"></i> developersdomain44@gmail.com
+        </div>
+      </div>
+
+      <div class="col-md-6 my-0 mt-3 text-center">
+        social media
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center py-3">
+    Copyright
+  </div>
+</footer>
+
 </body>
 </html>
