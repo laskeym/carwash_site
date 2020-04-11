@@ -15,6 +15,6 @@ pkg-resources==0.0.0
 requests==2.21.0
 SQLAlchemy==1.2.17
 stripe==2.20.3
-urllib3==1.24.1
+urllib3==1.24.2
 Werkzeug==0.14.1
 WTForms==2.2.1
