@@ -1,4 +1,4 @@
-# carwash_site
+# Elite Car Wash
 Simple car wash business site with checkout
 
 Elite Car Wash is a basic carwash membership service coded in Python using the Flask framework.
