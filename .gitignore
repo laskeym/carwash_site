@@ -1,6 +1,2 @@
-.vscode
+env/
 __pycache__/
-venv
-*.py[cod]
-*.egg
-*.egg-info

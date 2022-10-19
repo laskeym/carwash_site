@@ -9,7 +9,6 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
 import stripe
-import qrcode
 
 from datetime import datetime
 
@@ -130,8 +129,8 @@ def account_subscription():
     ------
     Note:
     ------
-    
-    * During subscription retrieval we use the customers subscriptions value.  If this wasn't a 1 to 1 model (i.e 1 Plan to 1 Product) and was a multiple subscription based model, the nested retrival most likely would not be the right approach. 
+
+    * During subscription retrieval we use the customers subscriptions value.  If this wasn't a 1 to 1 model (i.e 1 Plan to 1 Product) and was a multiple subscription based model, the nested retrival most likely would not be the right approach.
     """
 
     customer = stripe.Customer.retrieve(current_user.customer_id)
@@ -197,13 +196,13 @@ def cancel_subscription():
         flash('Subscription will be cancelled as of {cancel_dt}!'
               .format(cancel_dt=cancel_dt))
     elif action == 'reactivate':
-        subscription.cancel_at_period_end = False 
+        subscription.cancel_at_period_end = False
         subscription.save()
         flash('Subscription has been reactivated!')
     else:
         flash('Missing information!')
         return redirect(url_for('account_subscription'))
-        
+
     return redirect(url_for('account_subscription'))
 
 
@@ -224,10 +223,10 @@ def profile():
                                   address_1=form.address_1.data, address_2=form.address_2.data,
                                   city=form.city.data, state=form.state.data,
                                   zip=form.zip.data)
-        
+
         db.session.add(new_profile)
         db.session.commit()
-        
+
         flash('Profile Information has been saved!')
         return redirect(url_for('account'))
     return render_template('profile.html', form=form)
