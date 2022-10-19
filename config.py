@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
   SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-  SERVER_NAME = 'localhost:5000'
+  SERVER_NAME = os.environ.get('SERVER_NAME')
 
   # SQLALCHEMY
   SQLALCHEMY_DATABASE_URI = 'sqlite:///{db}'\
@@ -36,4 +36,4 @@ class Config(object):
     'publishable_key': os.environ.get('STRIPE_PK')
   }
 
-  stripe.api_key = STRIPE_KEYS['secret_key']
+  stripe.api_key = os.environ.get('STRIPE_SK')

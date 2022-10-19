@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
-from wtforms.fields.html5 import EmailField, DateField
+from wtforms.fields import EmailField, DateField
 from wtforms import validators
 
 
